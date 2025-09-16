@@ -1,0 +1,12 @@
+# Skip environment files
+#.env
+
+
+# Skip Python cache folders
+__pycache__/
+
+# Skip virtual environment folder
+Lib/
+Include/
+Scripts/
+Include/

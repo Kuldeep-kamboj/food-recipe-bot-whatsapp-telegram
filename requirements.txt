@@ -1,0 +1,19 @@
+# Core dependencies
+fastapi==0.115.8
+uvicorn[standard]>=0.24.0
+google-generativeai>=0.3.2
+python-dotenv>=1.0.0
+
+# Frontend
+streamlit>=1.28.1
+
+# Testing
+#pytest==7.4.3
+#pytest-asyncio==0.21.1
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+requests==2.31.0
+
+# Development
+python-multipart==0.0.6
+
