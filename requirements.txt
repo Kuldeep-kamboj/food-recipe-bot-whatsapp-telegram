@@ -4,8 +4,17 @@ uvicorn[standard]>=0.24.0
 google-generativeai>=0.3.2
 python-dotenv>=1.0.0
 
+# Twilio integration (optional)
+#twilio==8.13.0
+#twilio>=9.6.4
+
 # Frontend
 streamlit>=1.28.1
+
+#UPI payments
+razorpay==1.3.3  # For UPI payments
+pycryptodome==3.19.0  # For encryption
+qrcode[pil]==7.4.2  # For generating UPI QR codes
 
 # Testing
 #pytest==7.4.3

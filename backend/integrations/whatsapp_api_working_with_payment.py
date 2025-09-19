@@ -97,8 +97,7 @@ class WhatsAppCloudAPI:
                 "image": {
                     #"link": image_url,
                     "id": image_url,  # Use the uploaded media ID
-                    #"caption": caption
-                    "caption": "Here is your image"
+                    "caption": caption
                 }
             }
             logger.info(f"Attempting to send image with media ID: {image_url} to {to}")
@@ -605,8 +604,7 @@ async def process_payment_request(from_number: str):
 
             whatsapp_api.send_image_message(
                 from_number,  
-                save_qrcode_image(payment.qr_code),
-                "Here is your image!"
+                save_qrcode_image(payment.qr_code)
             )
         
         return {"status": "success", "payment_id": payment.payment_id}

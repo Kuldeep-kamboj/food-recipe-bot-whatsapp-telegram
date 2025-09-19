@@ -1,0 +1,568 @@
+2025-09-19 01:26:53,127 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=15a7c59661aaf9e1fbcf1870c521917648f2d444d6fdb6987934bfc6ae895605
+2025-09-19 01:26:53,128 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=15a7c59661aaf9e1fbcf1870c521917648f2d444d6fdb6987934bfc6ae895605
+2025-09-19 01:26:53,128 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Kuldeep Singh"
+                },
+                "wa_id": "919811700541"
+              }
+            ],
+            "messages": [
+              {
+                "from": "919811700541",
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAEhggQUMxNENBNjA1MDI3QkQyRjdFREI2ODg4RUFDQjVBNDQA",
+                "timestamp": "1758225377",
+                "text": {
+                  "body": "Hi"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:26:54,380 - backend.integrations.whatsapp_api - INFO - Message sent to 919811700541
+2025-09-19 01:26:55,586 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=15de4b1d7d6fc4aba095bb82d502cb9292f4fce20d6a30fa46268f5a7d576edc
+2025-09-19 01:26:55,587 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=15de4b1d7d6fc4aba095bb82d502cb9292f4fce20d6a30fa46268f5a7d576edc
+2025-09-19 01:26:55,587 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSOUEzNjI0MjU4RDlBRjcyNTkwAA==",
+                "status": "sent",
+                "timestamp": "1758225380",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "68f9da4992d53c35c4eb98980ccf5e34",
+                  "expiration_timestamp": "1758225380",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:26:55,588 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:26:56,035 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=d8148c38e9e38a9d320e7060dae85a96bc4e509d39a2a8c0977810d2b5070f7a
+2025-09-19 01:26:56,035 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=d8148c38e9e38a9d320e7060dae85a96bc4e509d39a2a8c0977810d2b5070f7a
+2025-09-19 01:26:56,036 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSOUEzNjI0MjU4RDlBRjcyNTkwAA==",
+                "status": "delivered",
+                "timestamp": "1758225380",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "68f9da4992d53c35c4eb98980ccf5e34",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:26:56,036 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:04,052 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=40841b99ad34d764024fc71e6087c3fb0f8d9c60a6ae947990084ad162efe0c8
+2025-09-19 01:27:04,052 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=40841b99ad34d764024fc71e6087c3fb0f8d9c60a6ae947990084ad162efe0c8
+2025-09-19 01:27:04,053 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Kuldeep Singh"
+                },
+                "wa_id": "919811700541"
+              }
+            ],
+            "messages": [
+              {
+                "from": "919811700541",
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAEhggQUMxM0Q2RUYwQTdFQjE1M0M3NjlDRDI5REEyQTg0QjcA",
+                "timestamp": "1758225388",
+                "text": {
+                  "body": "Payment"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:05,245 - backend.integrations.whatsapp_api - INFO - Message sent to 919811700541
+2025-09-19 01:27:07,318 - backend.integrations.whatsapp_api - INFO - Message sent to 919811700541
+2025-09-19 01:27:08,476 - backend.integrations.whatsapp_api - INFO - Message sent to 919811700541
+2025-09-19 01:27:08,479 - backend.integrations.whatsapp_api - INFO - Uploading file: E:\AI_ML_GEN\Projects\food-recipe-bot\backend\qrcodes\qrcode.jpg, size: 1084 bytes
+2025-09-19 01:27:09,869 - backend.integrations.whatsapp_api - INFO - Response status: 200
+2025-09-19 01:27:09,869 - backend.integrations.whatsapp_api - INFO - Response text: {"id":"950048410661384"}
+2025-09-19 01:27:09,869 - backend.integrations.whatsapp_api - INFO - Media uploaded successfully with ID: 950048410661384
+2025-09-19 01:27:09,871 - backend.integrations.whatsapp_api - INFO - Attempting to send image with media ID: 950048410661384 to 919811700541
+2025-09-19 01:27:09,871 - backend.integrations.whatsapp_api - DEBUG - Request payload: {'messaging_product': 'whatsapp', 'recipient_type': 'individual', 'to': '919811700541', 'type': 'image', 'image': {'id': '950048410661384', 'caption': 'Here is your image'}}
+2025-09-19 01:27:11,743 - backend.integrations.whatsapp_api - INFO - Image message sent to 919811700541
+2025-09-19 01:27:11,760 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=8e4180991d24019cce509f6feab481842938e1bdcf05c41c8df5db8c187d7f76
+2025-09-19 01:27:11,760 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=8e4180991d24019cce509f6feab481842938e1bdcf05c41c8df5db8c187d7f76
+2025-09-19 01:27:11,760 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSRjA1MDA4QkMzMDQ3OTYwRjk0AA==",
+                "status": "sent",
+                "timestamp": "1758225393",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "e72c1d25837008d6151cd391b4f58e53",
+                  "expiration_timestamp": "1758225393",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,761 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,762 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=6059a0331e5c096a0eac291d07db6417f516a173bc4f076052bc9b147cc68a50
+2025-09-19 01:27:11,762 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=6059a0331e5c096a0eac291d07db6417f516a173bc4f076052bc9b147cc68a50
+2025-09-19 01:27:11,762 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSRjA1MDA4QkMzMDQ3OTYwRjk0AA==",
+                "status": "delivered",
+                "timestamp": "1758225393",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "e72c1d25837008d6151cd391b4f58e53",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,763 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,763 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=33259737f7f4b6ee611cff404e28a7bc350e2646f9419ff324390a1dbf136cf9
+2025-09-19 01:27:11,763 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=33259737f7f4b6ee611cff404e28a7bc350e2646f9419ff324390a1dbf136cf9
+2025-09-19 01:27:11,764 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSQ0M5OUQxNjZBODhBNkM3NjIzAA==",
+                "status": "delivered",
+                "timestamp": "1758225391",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0b7c520a00f946ce6264c3493ae4afef",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,764 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,765 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=b4e146b34510b6065acc4ed571e35de1ad8c6fd1ce6bdded4b015a8829a0253c
+2025-09-19 01:27:11,765 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=b4e146b34510b6065acc4ed571e35de1ad8c6fd1ce6bdded4b015a8829a0253c
+2025-09-19 01:27:11,765 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSMjNCNjE5MTczQTYxQUQ3RjIwAA==",
+                "status": "delivered",
+                "timestamp": "1758225394",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0090f4a1236ed94d0c2d0e6bb14bc8a8",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,766 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,766 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=33259737f7f4b6ee611cff404e28a7bc350e2646f9419ff324390a1dbf136cf9
+2025-09-19 01:27:11,767 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=33259737f7f4b6ee611cff404e28a7bc350e2646f9419ff324390a1dbf136cf9
+2025-09-19 01:27:11,767 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSQ0M5OUQxNjZBODhBNkM3NjIzAA==",
+                "status": "delivered",
+                "timestamp": "1758225391",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0b7c520a00f946ce6264c3493ae4afef",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,768 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,768 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=b4e146b34510b6065acc4ed571e35de1ad8c6fd1ce6bdded4b015a8829a0253c
+2025-09-19 01:27:11,768 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=b4e146b34510b6065acc4ed571e35de1ad8c6fd1ce6bdded4b015a8829a0253c
+2025-09-19 01:27:11,769 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSMjNCNjE5MTczQTYxQUQ3RjIwAA==",
+                "status": "delivered",
+                "timestamp": "1758225394",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0090f4a1236ed94d0c2d0e6bb14bc8a8",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,769 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,770 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=4d36ff16717bee136bf29755c0a1732f4462bd3b334a8b18fb2e6df86cd12e83
+2025-09-19 01:27:11,770 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=4d36ff16717bee136bf29755c0a1732f4462bd3b334a8b18fb2e6df86cd12e83
+2025-09-19 01:27:11,770 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSQ0M5OUQxNjZBODhBNkM3NjIzAA==",
+                "status": "sent",
+                "timestamp": "1758225391",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0b7c520a00f946ce6264c3493ae4afef",
+                  "expiration_timestamp": "1758225391",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,771 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:11,771 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=0c30f5d8b001b1e1d2ca49af2218d18fdf26fdf2bc2d6b038daca85b7b3dd9db
+2025-09-19 01:27:11,772 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=0c30f5d8b001b1e1d2ca49af2218d18fdf26fdf2bc2d6b038daca85b7b3dd9db
+2025-09-19 01:27:11,772 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSMjNCNjE5MTczQTYxQUQ3RjIwAA==",
+                "status": "sent",
+                "timestamp": "1758225394",
+                "recipient_id": "919811700541",
+                "conversation": {
+                  "id": "0090f4a1236ed94d0c2d0e6bb14bc8a8",
+                  "expiration_timestamp": "1758225394",
+                  "origin": {
+                    "type": "service"
+                  }
+                },
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "service",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:11,773 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format
+2025-09-19 01:27:12,482 - backend.integrations.whatsapp_api - INFO - Received signature: sha256=0150a9e1c69f474ebc89301bb5a8e14bedecdc268f4ce88640e0f6e846216aa6
+2025-09-19 01:27:12,482 - backend.integrations.whatsapp_api - INFO - Expected signature: sha256=0150a9e1c69f474ebc89301bb5a8e14bedecdc268f4ce88640e0f6e846216aa6
+2025-09-19 01:27:12,482 - backend.integrations.whatsapp_api - DEBUG - Webhook data: {
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "1883708315509799",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551525038",
+              "phone_number_id": "702638202943424"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgMOTE5ODExNzAwNTQxFQIAERgSQzYwN0Q5RDk3NzhEMEUwRUNCAA==",
+                "status": "failed",
+                "timestamp": "1758225397",
+                "recipient_id": "919811700541",
+                "errors": [
+                  {
+                    "code": 131053,
+                    "title": "Media upload error",
+                    "message": "Media upload error",
+                    "error_data": {
+                      "details": "Image is invalid. Please check the image properties; supported are JPG/JPEG, RGB/RGBA, 8 bit/channels and PNG, RGB/RGBA, up to 8 bit/channel."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+2025-09-19 01:27:12,483 - backend.integrations.whatsapp_api - WARNING - Invalid or unsupported message format

@@ -2,38 +2,19 @@ from fastapi import APIRouter, Request, HTTPException, BackgroundTasks, Response
 import requests
 import os
 import logging
-from logging.handlers import RotatingFileHandler
 from typing import Dict, Any, Optional, List
-from pathlib import Path
 import json
 import hmac
 import hashlib
 import traceback
 import re
 from datetime import datetime
-import base64
 
 from ..services.recipe_service import recipe_service
-from ..services.payment_service import payment_service
 from ..utils.helpers import sanitize_input
-from ..config.settings import settings
-from ..database.db import db_instance
-from ..models.payment_model import PaymentStatus
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-# Add file handler directly to this logger
-if not logger.handlers:
-    file_handler = RotatingFileHandler(
-        'logs/whatsapp.log', 
-        maxBytes=10485760,
-        backupCount=5
-    )
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.setLevel(logging.DEBUG)
 
 # WhatsApp Cloud API configuration
 WHATSAPP_API_VERSION = os.getenv("WHATSAPP_API_VERSION", "v23.0")
@@ -79,36 +60,6 @@ class WhatsAppCloudAPI:
             return True
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to send message: {e}")
-            if hasattr(e, 'response') and e.response:
-                logger.error(f"Response content: {e.response.text}")
-            return False
-
-    def send_image_message(self, to: str, image_url: str, caption: str = "") -> bool:
-        """Send image message via WhatsApp"""
-        if not self.access_token:
-            logger.error("WhatsApp access token not configured")
-            return False
-        try:
-            payload = {
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": to,
-                "type": "image",
-                "image": {
-                    #"link": image_url,
-                    "id": image_url,  # Use the uploaded media ID
-                    #"caption": caption
-                    "caption": "Here is your image"
-                }
-            }
-            logger.info(f"Attempting to send image with media ID: {image_url} to {to}")
-            logger.debug(f"Request payload: {payload}")
-            response = requests.post(self.api_url, json=payload, headers=self.headers, timeout=10)
-            response.raise_for_status()
-            logger.info(f"Image message sent to {to}")
-            return True
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Failed to send image message: {e}")
             if hasattr(e, 'response') and e.response:
                 logger.error(f"Response content: {e.response.text}")
             return False
@@ -190,17 +141,7 @@ def parse_whatsapp_message(webhook_data: Dict[str, Any]) -> Optional[Dict[str, A
                 # Convert to lowercase for command matching but keep original for processing
                 body_lower = body_text.lower()
                 
-                # Check for payment-related commands first
-                if any(word in body_lower for word in ["pay", "payment", "premium", "upgrade", "subscribe", "buy"]):
-                    return {"type": "payment_request", "from_number": from_number}
-                elif any(word in body_lower for word in ["payment status", "status of payment", "payment info", "my payments"]):
-                    return {"type": "payment_status", "from_number": from_number}
-                elif any(word in body_lower for word in ["confirm payment", "paid", "payment done", "i paid"]):
-                    return {"type": "payment_confirmation", "from_number": from_number}
-                elif any(word in body_lower for word in ["my account", "account info", "premium status"]):
-                    return {"type": "account_info", "from_number": from_number}
-                
-                # Check for other special commands and conversational messages
+                # Check for special commands and conversational messages
                 if any(word in body_lower for word in ["start", "hello", "hi", "hey", "good morning", "good evening"]):
                     return {"type": "start", "from_number": from_number}
                 elif any(word in body_lower for word in ["help", "support", "assistance", "issue", "complaint"]):
@@ -284,13 +225,6 @@ I can help you discover delicious recipes based on ingredients you have.
 Send your ingredients in this format:
 `ingredient1, ingredient2 | cuisine | dietary restrictions | cooking time`
 
-💰 *Premium Features:*
-Type 'premium' to upgrade for:
-• Exclusive recipes from top chefs
-• Step-by-step video guides
-• Nutritional information
-• Meal planning features
-
 ✨ *Examples:*
 • `chicken, rice, vegetables`
 • `pasta, tomato | Italian | vegetarian | 30`
@@ -299,7 +233,6 @@ Type 'premium' to upgrade for:
 💡 *Quick commands:*
 • *help* - Show detailed instructions
 • *more* - Get additional options after a recipe
-• *premium* - Upgrade to premium features
 
 Send your ingredients now to get started! 🥘"""
 
@@ -308,13 +241,6 @@ def get_help_message() -> str:
 
 🥕 *Format your message:*
 `ingredients | cuisine | dietary restrictions | cooking time`
-
-💰 *Premium Features:*
-Type 'premium' to unlock:
-• Exclusive chef recipes
-• Video cooking guides
-• Nutritional analysis
-• Meal planning tools
 
 🍝 *Examples:*
 • Basic: `chicken, rice, vegetables`
@@ -430,12 +356,6 @@ I'm your personal recipe assistant! Here's what I can help you with:
 - Accommodate dietary restrictions (vegan, gluten-free, etc.)
 - Adjust for cooking time constraints
 
-💰 *Premium Features*
-- Exclusive recipes from top chefs
-- Step-by-step video cooking guides
-- Detailed nutritional information
-- Personalized meal planning
-
 📋 *Additional Features*
 - Provide step-by-step cooking instructions
 - Offer recipe variations and alternatives
@@ -451,92 +371,6 @@ Examples:
 
 Type 'help' for more detailed instructions!"""
 
-# Payment-related messages
-def get_payment_message() -> str:
-    return """💰 *Premium Recipe Access Payment* 💰
-
-Upgrade to premium for:
-• Exclusive recipes from top chefs
-• Step-by-step video guides
-• Nutritional information
-• Meal planning features
-• Priority support
-
-Reply with 'pay' to continue with payment."""
-
-def get_payment_processing_message() -> str:
-    return """⏳ *Processing your payment request...*
-
-We're setting up a secure payment link for you. This will only take a moment."""
-
-def get_payment_success_message() -> str:
-    return """🎉 *Payment Successful!* 🎉
-
-Thank you for upgrading to premium! You now have access to:
-
-• Exclusive premium recipes
-• Step-by-step video guides
-• Nutritional information
-• Meal planning features
-• Priority support
-
-Enjoy your enhanced cooking experience! 🍳"""
-
-def get_payment_failed_message() -> str:
-    return """❌ *Payment Failed*
-
-We couldn't process your payment. This could be due to:
-• Insufficient funds
-• Network issues
-• Payment cancellation
-
-Please try again or contact support if the issue persists."""
-
-def get_payment_instructions_message(upi_link: str, payment_id: str) -> str:
-    return f"""📋 *Payment Instructions*
-
-Please complete your payment using one of these methods:
-
-1. *Scan QR Code*: Open any UPI app and scan the QR code we'll send you
-2. *Click Link*: {upi_link}
-3. *Manual UPI*: Send ₹{settings.PAYMENT_AMOUNT} to {settings.UPI_VPA} with note: {payment_id}
-
-Your Payment ID: {payment_id}
-
-After payment, you'll get instant access to premium recipes! 🎉"""
-
-def get_payment_status_message(payments: List[Dict[str, Any]]) -> str:
-    if not payments:
-        return "No payments found for your account."
-    
-    message = ["📊 *Your Payment History*"]
-    
-    for payment in payments:
-        status_emoji = "✅" if payment['status'] == 'captured' else "⏳" if payment['status'] == 'created' else "❌"
-        message.append(f"\n{status_emoji} *Payment ID:* {payment['payment_id']}")
-        message.append(f"*Amount:* ₹{payment['amount']}")
-        message.append(f"*Status:* {payment['status']}")
-        message.append(f"*Date:* {payment['created_at']}")
-        message.append("─" * 20)
-    
-    message.append("\nType 'premium' to upgrade or 'help' for more options.")
-    return "\n".join(message)
-
-def get_account_info_message(user_data: Dict[str, Any]) -> str:
-    if not user_data:
-        return "No account information found. Please start by sending a message to create your account."
-    
-    premium_status = "✅ Premium User" if user_data.get('is_premium') else "❌ Free Account"
-    expiry_info = f"\n*Premium Expires:* {user_data.get('premium_expiry')}" if user_data.get('premium_expiry') else ""
-    
-    return f"""👤 *Your Account Information*
-
-*Phone:* {user_data.get('phone_number', 'N/A')}
-*Status:* {premium_status}{expiry_info}
-*Member Since:* {user_data.get('created_at', 'N/A')}
-
-Type 'premium' to upgrade your account or 'payment status' to view your payment history."""
-
 async def process_recipe_request(from_number: str, recipe_data: Dict[str, Any]):
     try:
         # Send processing message
@@ -546,100 +380,9 @@ async def process_recipe_request(from_number: str, recipe_data: Dict[str, Any]):
         recipe = await recipe_service.generate_recipe(recipe_data)
         message = format_recipe_for_whatsapp(recipe)
         whatsapp_api.send_text_message(from_number, message)
-        
-        # Save user if not exists
-        user_data = db_instance.get_user(from_number)
-        if not user_data:
-            db_instance.save_user({
-                'phone_number': from_number,
-                'name': None,
-                'is_premium': False
-            })
-            
     except Exception as e:
         logger.error(f"Error in process_recipe_request: {e}")
         whatsapp_api.send_text_message(from_number, get_error_message())
-
-async def process_payment_request(from_number: str):
-    """Process payment request from user"""
-    try:
-        # Send processing message
-        whatsapp_api.send_text_message(from_number, get_payment_processing_message())
-        
-        # Create payment
-        payment = payment_service.create_upi_payment_link(
-            amount=settings.PAYMENT_AMOUNT,
-            description=settings.PAYMENT_DESCRIPTION,
-            customer_phone=from_number
-        )
-        
-        # Save payment to database
-        db_instance.save_payment({
-            'payment_id': payment.payment_id,
-            'amount': payment.amount,
-            'currency': payment.currency,
-            'customer_phone': from_number,
-            'status': PaymentStatus.PENDING,
-            'description': settings.PAYMENT_DESCRIPTION
-        })
-        
-        # Send payment instructions
-        whatsapp_api.send_text_message(
-            from_number, 
-            get_payment_instructions_message(payment.upi_link, payment.payment_id)
-        )
-        
-        # Send QR code as image if available
-        if payment.qr_code:
-            whatsapp_api.send_text_message(
-                from_number,
-                "Scan this QR code with any UPI app to complete your payment:"
-            )
-            # Note: WhatsApp Cloud API might need special handling for images
-            # For now, we'll just send the QR code as a link
-            
-            #whatsapp_api.send_text_message(
-            #    from_number,
-            #    f"QR Code URL: {payment.qr_code}"
-            #)
-
-            whatsapp_api.send_image_message(
-                from_number,  
-                save_qrcode_image(payment.qr_code),
-                "Here is your image!"
-            )
-        
-        return {"status": "success", "payment_id": payment.payment_id}
-    except Exception as e:
-        logger.error(f"Error in process_payment_request: {e}")
-        whatsapp_api.send_text_message(from_number, get_payment_failed_message())
-        return {"status": "error", "message": str(e)}
-
-async def process_payment_status_request(from_number: str):
-    """Process payment status request from user"""
-    try:
-        # Get user's payment history
-        payments = db_instance.get_user_payments(from_number, limit=5)
-        status_message = get_payment_status_message(payments)
-        whatsapp_api.send_text_message(from_number, status_message)
-        return {"status": "success"}
-    except Exception as e:
-        logger.error(f"Error in process_payment_status_request: {e}")
-        whatsapp_api.send_text_message(from_number, "Sorry, I couldn't retrieve your payment status. Please try again later.")
-        return {"status": "error", "message": str(e)}
-
-async def process_account_info_request(from_number: str):
-    """Process account information request"""
-    try:
-        # Get user account information
-        user_data = db_instance.get_user(from_number)
-        account_message = get_account_info_message(user_data)
-        whatsapp_api.send_text_message(from_number, account_message)
-        return {"status": "success"}
-    except Exception as e:
-        logger.error(f"Error in process_account_info_request: {e}")
-        whatsapp_api.send_text_message(from_number, "Sorry, I couldn't retrieve your account information. Please try again later.")
-        return {"status": "error", "message": str(e)}
 
 @router.get("/webhook/whatsapp")
 async def verify_whatsapp_webhook_endpoint(request: Request):
@@ -725,23 +468,6 @@ async def whatsapp_webhook(
         elif parsed_message["type"] == "capabilities":
             whatsapp_api.send_text_message(from_number, get_capabilities_message())
             return {"status": "success", "message": "Capabilities message sent"}
-            
-        # Payment-related handlers
-        elif parsed_message["type"] == "payment_request":
-            background_tasks.add_task(process_payment_request, from_number)
-            return {"status": "processing", "message": "Payment processing started"}
-            
-        elif parsed_message["type"] == "payment_status":
-            background_tasks.add_task(process_payment_status_request, from_number)
-            return {"status": "processing", "message": "Payment status request processing"}
-            
-        elif parsed_message["type"] == "payment_confirmation":
-            whatsapp_api.send_text_message(from_number, "Thank you for confirming your payment. We'll verify it and update your account shortly.")
-            return {"status": "success", "message": "Payment confirmation received"}
-            
-        elif parsed_message["type"] == "account_info":
-            background_tasks.add_task(process_account_info_request, from_number)
-            return {"status": "processing", "message": "Account info request processing"}
 
         elif parsed_message["type"] == "recipe_request":
             recipe_request = {
@@ -762,81 +488,3 @@ async def whatsapp_webhook(
         except:
             pass
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
-    
-def save_qrcode_image(qrcode):
-    data_url = qrcode
-    # Extract the base64 part
-    base64_data = data_url.split(",")[1]
-
-    # Decode and save as PNG
-    current_dir = Path(__file__).parent
-    # Go up one level and into qrcodes folder
-    qr_dir = current_dir.parent / "qrcodes"
-    qr_path = qr_dir / "qrcode.jpg"
-    with open(qr_path, "wb") as f:
-        f.write(base64.b64decode(base64_data))
-    
-    return upload_qrcode_image(qr_path)
-    #return qr_path    
-
-def upload_qrcode_image(imagepath):
-    access_token = WHATSAPP_ACCESS_TOKEN
-    phone_number_id = WHATSAPP_PHONE_NUMBER_ID
-    api_version = "v23.0"
-    
-    url = f"https://graph.facebook.com/{api_version}/{phone_number_id}/media"
-    headers = {"Authorization": f"Bearer {access_token}"}
-
-    try:
-        imagepath_str = str(imagepath)
-        
-        # Verify file exists and has content
-        if not os.path.exists(imagepath_str):
-            logger.error(f"File does not exist: {imagepath_str}")
-            return None
-            
-        file_size = os.path.getsize(imagepath_str)
-        if file_size == 0:
-            logger.error(f"File is empty: {imagepath_str}")
-            return None
-            
-        logger.info(f"Uploading file: {imagepath_str}, size: {file_size} bytes")
-
-        with open(imagepath_str, 'rb') as image_file:
-            # Read the file content to verify it's not empty
-            file_content = image_file.read()
-            if len(file_content) == 0:
-                logger.error("File content is empty after reading")
-                return None
-                
-            # Reset file pointer
-            image_file.seek(0)
-            
-            files = {
-                'file': ('image.jpg', image_file, 'image/jpeg'),
-            }
-            data = {
-                'messaging_product': 'whatsapp'
-            }
-
-            response = requests.post(url, headers=headers, files=files, data=data, timeout=30)
-            
-            logger.info(f"Response status: {response.status_code}")
-            logger.info(f"Response text: {response.text}")
-            
-            response.raise_for_status()
-            
-            response_data = response.json()
-            if 'id' in response_data:
-                media_id = response_data['id']
-                logger.info(f"Media uploaded successfully with ID: {media_id}")
-                return media_id
-            else:
-                logger.error(f"No media ID in response: {response_data}")
-                return None
-                
-    except Exception as e:
-        logger.error(f"Error uploading media: {str(e)}")
-        if hasattr(e, 'response') and e.response is not None:
-            logger.error(f"Response content: {e.response.text}")
-        return None
