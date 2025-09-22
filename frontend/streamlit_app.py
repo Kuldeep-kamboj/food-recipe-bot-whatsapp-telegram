@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import json
+import os
+
 from typing import List, Optional
 
 # Configure page
@@ -10,9 +12,12 @@ st.set_page_config(
     layout="wide"
 )
 
+# Get backend URL from environment variable with default
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+
 # API configuration
-API_BASE_URL = "http://localhost:8000/api/v1"
-API_HEALTH_URL = "http://localhost:8000"
+API_BASE_URL = BACKEND_URL + "/api/v1"
+API_HEALTH_URL = BACKEND_URL
 
 def test_api_connection():
     """Test connection to the backend API"""

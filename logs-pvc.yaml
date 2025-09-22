@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: logs-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: hostpath # Uses the local node's filesystem Data is stored on the actual worker node's disk. Typically used in development/local environments (like Minikube, kind, Docker Desktop)
+  #storageClassName: standard # Uses cloud provider's block storage (AWS EBS, Azure Disk, GCE PD). Managed storage service with automatic provisioning. Typically used in production cloud environments

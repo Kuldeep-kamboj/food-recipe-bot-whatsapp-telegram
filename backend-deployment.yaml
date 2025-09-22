@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: food-recipe-bot
+    component: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food-recipe-bot
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: food-recipe-bot
+        component: backend
+    spec:
+      containers:
+      - name: backend
+        image: your-dockerhub-username/food-recipe-bot-backend:latest #Replace your-dockerhub-username with your actual Docker Hub username.
+        imagePullPolicy: Never #This tells Kubernetes to use the local Docker image.
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: app-secrets
+            optional: true
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: static-volume
+          mountPath: /app/static
+        command: ["uvicorn"]
+        args: ["backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: logs-pvc
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-pvc

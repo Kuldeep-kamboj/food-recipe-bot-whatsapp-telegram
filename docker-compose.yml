@@ -1,41 +1,26 @@
-version: '3.8'
-
 services:
-  recipe-api:
+  backend:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - ENVIRONMENT=production
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
-      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN}
-      - WHATSAPP_APP_SECRET=${WHATSAPP_APP_SECRET}
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - TELEGRAM_WEBHOOK_SECRET=${TELEGRAM_WEBHOOK_SECRET}
     volumes:
-      - recipe-data:/app/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - ./logs:/app/logs
+      - ./static:/app/static
+    env_file:
+      - .env
+    command: uvicorn backend.app:app --host 0.0.0.0 --port 8000
 
-  recipe-frontend:
-    image: python:3.11-slim
-    working_dir: /app
+  frontend:
+    build: .
     ports:
       - "8501:8501"
     volumes:
-      - ./frontend:/app
-      - ./requirements.txt:/app/requirements.txt
-    command: >
-      sh -c "pip install --no-cache-dir -r requirements.txt &&
-             streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0"
+      - ./logs:/app/logs
+      - ./static:/app/static
+    env_file:
+      - .env
+    environment:
+      - BACKEND_URL=http://backend:8000  # ← Add this line
+    command: streamlit run frontend/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
     depends_on:
-      - recipe-api
-    restart: unless-stopped
-
-volumes:
-  recipe-data:
+      - backend

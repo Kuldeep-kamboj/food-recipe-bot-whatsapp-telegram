@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: food-recipe-bot
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food-recipe-bot
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: food-recipe-bot
+        component: frontend
+    spec:
+      containers:
+      - name: frontend
+        #image: your-dockerhub-username/food-recipe-bot-frontend:latest #Replace your-dockerhub-username with your actual Docker Hub username.
+        image: your-dockerhub-username/food-recipe-bot-backend:latest #Replace your-dockerhub-username with your actual Docker Hub username.
+        imagePullPolicy: Never #This tells Kubernetes to use the local Docker image.
+        ports:
+        - containerPort: 8501
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: app-secrets
+            optional: true
+        env:
+        - name: BACKEND_URL
+          value: "http://backend-service:8000"
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: static-volume
+          mountPath: /app/static
+        command: ["streamlit"]
+        args: ["run", "frontend/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: logs-pvc
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-pvc

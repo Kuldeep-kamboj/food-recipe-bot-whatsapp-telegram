@@ -1,38 +1,48 @@
-# Use official Python runtime
+# Use official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Set working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV ENVIRONMENT=production
-
-# Install system dependencies
+# Install system dependencies required for PIL and other libraries
 RUN apt-get update && apt-get install -y \
     gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
+# Copy requirements file first to leverage Docker cache
 COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
-COPY backend/ ./backend/
-COPY config/ ./config/
-COPY .env ./
+# Copy the current directory contents into the container at /app
+COPY . .
 
-# Create non-root user
-RUN useradd -m -u 1000 appuser
-USER appuser
+# Create necessary directories
+RUN mkdir -p logs static/images static/templates
 
-# Expose port
-EXPOSE 8000
+# Make ports available (FastAPI and Streamlit)
+EXPOSE 8000 8501
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Define environment variable
+ENV PYTHONPATH=/app
 
-# Run application
-CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default command (can be overridden)
+#CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+#Backend Container to Include Frontend
+CMD ["sh", "-c", "uvicorn backend.app:app --host 0.0.0.0 --port 8000 & streamlit run frontend/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 & wait"]
+
+# Copy the run.sh file
+#COPY run.sh .
+
+# Make it executable
+#RUN chmod +x run.sh
+
+#CMD ./run.sh  # This will use your custom run.sh script
+
+

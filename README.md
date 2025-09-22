@@ -5,7 +5,7 @@ A smart recipe generator that creates delicious recipes based on your available 
 ## Features
 
 - 🤖 AI-powered recipe generation using Google Gemini
-- 📱 WhatsApp integration via WhatsApp Cloud API
+- 📱 WhatsApp integration via Twilio
 - 💾 SQLite database for recipe storage
 - 🎨 Streamlit web interface
 - 🐳 Docker container support
@@ -15,7 +15,7 @@ A smart recipe generator that creates delicious recipes based on your available 
 
 - Python 3.9+
 - Google Gemini API key
-- (Optional) Meta account for WhatsApp integration
+- (Optional) WhatsApp Cloud API account for WhatsApp integration
 
 ## Installation
 

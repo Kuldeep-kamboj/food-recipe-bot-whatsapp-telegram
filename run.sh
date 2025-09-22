@@ -1,128 +1,90 @@
-
-## 10. run.sh
-```bash
 #!/bin/bash
 
-# Food Recipe Bot Startup Script
-set -e
+# Default to local execution
+MODE="local"
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
-# Function to print colored output
-print_status() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if .env file exists
-if [ ! -f .env ]; then
-    print_warning ".env file not found. Creating from .env.example..."
-    cp .env.example .env
-    print_status "Please edit .env file with your API keys and restart the script."
-    exit 1
-fi
-
-# Load environment variables
-export $(grep -v '^#' .env | xargs)
-
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-# Function to check if a port is in use
-port_in_use() {
-    netstat -tuln | grep -q ":$1 "
-}
-
-# Main execution
-case "${1:-}" in
-    "docker")
-        print_status "Starting with Docker Compose..."
-        if ! command_exists docker; then
-            print_error "Docker is not installed. Please install Docker first."
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --docker)
+            MODE="docker"
+            shift
+            ;;
+        --local)
+            MODE="local"
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
             exit 1
-        fi
-        
-        if ! command_exists docker-compose; then
-            print_error "Docker Compose is not installed. Please install it first."
-            exit 1
-        fi
-        
-        docker-compose up --build
-        ;;
+            ;;
+    esac
+done
+
+run_local() {
+    echo "Starting Food Recipe Bot locally..."
     
-    "backend")
-        print_status "Starting Backend API..."
-        cd backend
-        
-        if port_in_use 8000; then
-            print_error "Port 8000 is already in use. Please free the port and try again."
-            exit 1
-        fi
-        
-        if [ "$ENVIRONMENT" = "production" ]; then
-            uvicorn app:app --host 0.0.0.0 --port 8000
-        else
-            uvicorn app:app --host 0.0.0.0 --port 8000 --reload
-        fi
-        ;;
-    
-    "frontend")
-        print_status "Starting Streamlit Frontend..."
-        cd frontend
-        
-        if port_in_use 8501; then
-            print_error "Port 8501 is already in use. Please free the port and try again."
-            exit 1
-        fi
-        
-        if ! command_exists streamlit; then
-            print_error "Streamlit is not installed. Installing now..."
-            pip install streamlit
-        fi
-        
-        streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
-        ;;
-    
-    "test")
-        print_status "Running Tests..."
-        if ! command_exists pytest; then
-            print_error "pytest is not installed. Installing now..."
-            pip install pytest pytest-asyncio
-        fi
-        
-        pytest tests/ -v
-        ;;
-    
-    "install")
-        print_status "Installing Dependencies..."
+    # Install dependencies if needed
+    if [ ! -d "venv" ]; then
+        python -m venv venv
+        source venv/bin/activate
         pip install -r requirements.txt
-        
-        # Additional development dependencies
-        if [ "$ENVIRONMENT" = "development" ]; then
-            pip install pytest pytest-asyncio
-        fi
-        ;;
+    else
+        source venv/bin/activate
+    fi
     
+    # Start both backend and frontend
+    echo "Starting backend on http://localhost:8000"
+    uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload &
+    
+    echo "Starting frontend on http://localhost:8501"
+    streamlit run frontend/streamlit_app.py --server.port 8501 &
+    
+    echo "Application started!"
+    echo "Backend: http://localhost:8000"
+    echo "Frontend: http://localhost:8501"
+    echo "API Docs: http://localhost:8000/docs"
+}
+
+run_docker() {
+    echo "Starting Food Recipe Bot with Docker..."
+    
+    # Check if Docker is installed
+    if ! command -v docker &> /dev/null; then
+        echo "Docker is not installed. Falling back to local mode."
+        run_local
+        return
+    fi
+    
+    # Check if docker-compose is installed
+    if ! command -v docker-compose &> /dev/null; then
+        echo "Docker Compose is not installed. Falling back to local mode."
+        run_local
+        return
+    fi
+    
+    # Build and start with docker-compose
+    docker-compose up -d --build
+    
+    echo "Application started with Docker!"
+    echo "Backend: http://localhost:8000"
+    echo "Frontend: http://localhost:8501"
+    echo "API Docs: http://localhost:8000/docs"
+    echo ""
+    echo "To view logs: docker-compose logs -f"
+    echo "To stop: docker-compose down"
+}
+
+# Execute based on mode
+case $MODE in
+    "docker")
+        run_docker
+        ;;
+    "local")
+        run_local
+        ;;
     *)
-        echo "Usage: $0 {docker|backend|frontend|test|install}"
-        echo "  docker    - Start with Docker Compose"
-        echo "  backend   - Start only the backend API"
-        echo "  frontend  - Start only the frontend"
-        echo "  test      - Run tests"
-        echo "  install   - Install dependencies"
+        echo "Invalid mode: $MODE"
         exit 1
         ;;
 esac

@@ -117,6 +117,13 @@ async def root():
         }
     }
 
+# Add health check endpoint
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    logger.info("Health check endpoint called")
+    return {"status": "healthy", "service": "food-recipe-bot"}
+
 @app.get("/api/v1/health")
 async def health_check():
     """Health check endpoint"""
